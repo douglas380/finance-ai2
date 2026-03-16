@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Finance AI</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family: Arial;
+background: linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+margin:0;
+}
+
+header{
+padding:20px;
+font-size:25px;
+text-align:center;
+font-weight:bold;
+}
+
+.container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+}
+
+button{
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#22c55e;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#16a34a;
+}
+
+.lista{
+margin-top:10px;
+max-height:200px;
+overflow:auto;
+}
+
+.item{
+background:#334155;
+padding:10px;
+border-radius:8px;
+margin-top:5px;
+display:flex;
+justify-content:space-between;
+}
+
+.ia{
+margin-top:10px;
+background:#0f172a;
+padding:10px;
+border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>💰 Finance AI</header>
+
+<div class="container">
+
+<div class="card">
+
+<h3>Adicionar movimentação</h3>
+
+<input id="descricao" placeholder="Descrição">
+
+<input id="valor" type="number" placeholder="Valor">
+
+<select id="tipo">
+<option value="receita">Receita</option>
+<option value="despesa">Despesa</option>
+</select>
+
+<button onclick="adicionar()">Adicionar</button>
+
+<div class="lista" id="lista"></div>
+
+</div>
+
+<div class="card">
+
+<h3>Resumo</h3>
+
+<canvas id="grafico"></canvas>
+
+<div class="ia">
+<h3>🤖 IA Financeira</h3>
+<p id="dica">Adicione movimentações para receber dicas.</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let dados = []
+
+function adicionar(){
+
+let descricao = document.getElementById("descricao").value
+let valor = Number(document.getElementById("valor").value)
+let tipo = document.getElementById("tipo").value
+
+dados.push({descricao,valor,tipo})
+
+mostrar()
+
+}
+
+function mostrar(){
+
+let lista = document.getElementById("lista")
+lista.innerHTML=""
+
+dados.forEach(d=>{
+
+lista.innerHTML+=`
+<div class="item">
+${d.descricao}
+<span>R$ ${d.valor}</span>
+</div>
+`
+
+})
+
+atualizarGrafico()
+ia()
+
+}
+
+let grafico
+
+function atualizarGrafico(){
+
+let receitas = dados.filter(d=>d.tipo=="receita").reduce((a,b)=>a+b.valor,0)
+let despesas = dados.filter(d=>d.tipo=="despesa").reduce((a,b)=>a+b.valor,0)
+
+if(grafico) grafico.destroy()
+
+grafico = new Chart(document.getElementById("grafico"),{
+
+type:"doughnut",
+
+data:{
+labels:["Receitas","Despesas"],
+datasets:[{
+data:[receitas,despesas]
+}]
+}
+
+})
+
+}
+
+function ia(){
+
+let receitas = dados.filter(d=>d.tipo=="receita").reduce((a,b)=>a+b.valor,0)
+let despesas = dados.filter(d=>d.tipo=="despesa").reduce((a,b)=>a+b.valor,0)
+
+let dica = document.getElementById("dica")
+
+if(despesas
